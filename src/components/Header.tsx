@@ -10,7 +10,7 @@ const Header = () => {
       </p>
       <nav className="flex gap-4 font-secondary">
         <NavLink to="/">Home</NavLink>
-        <NavLink to="/menu">Menu</NavLink>
+        <NavLink to="/menu-and-bookings">Menu and Bookings</NavLink>
         <NavLink to="/digital-menu">Digital Menu</NavLink>
         <NavLink to="/favorites">Favorites</NavLink>
         <NavLink to="/about">About</NavLink>
