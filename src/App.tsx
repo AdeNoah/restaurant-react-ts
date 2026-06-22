@@ -12,23 +12,23 @@ import About from "./pages/About.tsx"
 function App() {
 
   // messy logic to fetch the data to be used accross the app.
-  const mealDBUrl = 'https://www.themealdb.com/api/json/v1/1/'
-  const handlePageLoad = async () => {
-    try{
-      const response = await fetch(`${mealDBUrl}`) 
-      if(!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      const data = await response.json();
-      console.log('Fetched data:', data)
-    } catch (error) {
-      if(error instanceof Error) {
-        console.error("Error loading page:", error)
-      } else {
-        console.error("Unknown error loading page:", error)
-      }
-    }
-  }
+  // const mealDBUrl = 'https://www.themealdb.com/api/json/v1/1/'
+  // const handlePageLoad = async () => {
+  //   try{
+  //     const response = await fetch(`${mealDBUrl}`) 
+  //     if(!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`)
+  //     }
+  //     const data = await response.json();
+  //     console.log('Fetched data:', data)
+  //   } catch (error) {
+  //     if(error instanceof Error) {
+  //       console.error("Error loading page:", error)
+  //     } else {
+  //       console.error("Unknown error loading page:", error)
+  //     }
+  //   }
+  // }
 
 
   // the actual rendered part
