@@ -1,4 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom"
+import homeBanner from "../assets/homeBanner.png"
+import menuBanner from "../assets/menuBanner.png"
 
 const Header = () => {
   const location = useLocation()
@@ -8,7 +10,7 @@ const Header = () => {
       return (
         <div className="mx-0 w-full px-0 relative h-fit">
           <img
-            src="src/assets/images/home-banner.png"
+            src={homeBanner}
             alt="Home banner"
             className="w-full h-91 object-cover"
           />
@@ -31,7 +33,7 @@ const Header = () => {
       return (
         <div className="mx-0 w-full px-0 relative h-fit">
           <img
-            src="src/assets/images/menu-banner.png"
+            src={menuBanner}
             alt="Menu banner"
             className="w-full h-91 object-cover"
           />
