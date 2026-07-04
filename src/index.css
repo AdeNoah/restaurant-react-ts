@@ -2,6 +2,9 @@
 
 @import "tailwindcss";
 
+/* @theme {
+  --breakpoint-3xl: 120rem; 
+}      */
 
 
 .font-primary {
@@ -41,4 +44,6 @@
 .bg-dusty-rose {
   background-color: #f4ded8;
 }
+
+
 

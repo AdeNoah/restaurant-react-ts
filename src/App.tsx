@@ -11,6 +11,12 @@ import About from "./pages/About.tsx"
 
 function App() {
 
+  // interface MealData {
+  //   id: number;
+  //   name: string;
+  //   price: number;
+  // }
+
   // messy logic to fetch the data to be used accross the app.
   // const mealDBUrl = 'https://www.themealdb.com/api/json/v1/1/'
   // const handlePageLoad = async () => {
