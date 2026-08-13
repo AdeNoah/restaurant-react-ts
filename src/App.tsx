@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom"
-// import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Header from "./components/Header.tsx"
 import Footer from "./components/Footer.tsx"
 import Home from "./pages/Home.tsx"
@@ -7,43 +7,61 @@ import MenuAndBookings from "./pages/MenuAndBookings.tsx"
 import DigitalMenu from "./pages/DigitalMenu.tsx"
 import Favorites from "./pages/Favorites.tsx"
 import About from "./pages/About.tsx"
-
+import { type MealData } from "./data/types"
 
 function App() {
+  const [meals, setMeals] = useState<MealData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // interface MealData {
-  //   id: number;
-  //   name: string;
-  //   price: number;
-  // }
+  // const mealURL = "https://www.themealdb.com/api/json/v1/1/list.php?a=list"
+  const mealURL = "https://www.themealdb.com/api/json/v1/1/filter.php?a=Canadian"
+  
+  useEffect(() => {
+    const fetchMeals = async () => {
+      setLoading(true)
+      setError(null)
 
-  // messy logic to fetch the data to be used accross the app.
-  // const mealDBUrl = 'https://www.themealdb.com/api/json/v1/1/'
-  // const handlePageLoad = async () => {
-  //   try{
-  //     const response = await fetch(`${mealDBUrl}`) 
-  //     if(!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`)
-  //     }
-  //     const data = await response.json();
-  //     console.log('Fetched data:', data)
-  //   } catch (error) {
-  //     if(error instanceof Error) {
-  //       console.error("Error loading page:", error)
-  //     } else {
-  //       console.error("Unknown error loading page:", error)
-  //     }
-  //   }
-  // }
+      try {
+        const response = await fetch(mealURL)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
 
+        const result = await response.json()
+        const items = Array.isArray(result.meals) ? result.meals : []
 
-  // the actual rendered part
+        const mappedMeals: MealData[] = items.map((meal: any) => ({
+          mealId: Number(meal.idMeal) || 0,
+          mealName: meal.strMeal || "Unknown meal",
+          mealPrice: Number((Math.random() * 18 + 5).toFixed(2)),
+          mealImage: meal.strMealThumb || "",
+        }))
+
+        setMeals(mappedMeals)
+      } catch (fetchError) {
+        if (fetchError instanceof Error) {
+          setError(fetchError.message)
+        } else {
+          setError("An unknown error occurred while loading meals.")
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
+ 
+    fetchMeals()
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <div className="px-0 py-0 flex-1">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={<Home meals={meals} loading={loading} error={error} />}
+          />
           <Route path="/menu-and-bookings" element={<MenuAndBookings />} />
           <Route path="/digital-menu" element={<DigitalMenu />} />
           <Route path="/favorites" element={<Favorites />} />

@@ -16,10 +16,10 @@ const Header = () => {
           />
 
           <div className="text-charcoal absolute inset-0 flex flex-col items-center justify-center">
-            <div className="bg-white/50 p-10 rounded-md max-w-lg text-center">
-              <p className="text-4xl font-primary">Welcome to Culinary</p>
-              <p className="text-3xl font-secondary">Our Collection</p>
-              <p className="text-lg font-secondary">
+            <div className="bg-white/50 p-5 rounded-md max-w-lg text-center md:p-10 lg:p-10">
+              <p className="text-2xl font-primary md:text-3xl lg:text-4xl">Welcome to Culinary</p>
+              <p className="text-xl font-secondary md:text-2xl lg:text-3xl">Our Collection</p>
+              <p className="text-sm font-secondary md:text-md lg:text-lg">
                 A visual journey through our gastronomic creations, every plate is a
                 canvas, every dish a masterpiece.
               </p>
@@ -39,9 +39,9 @@ const Header = () => {
           />
 
           <div className="absolute inset-0 flex justify-center items-center">
-            <div className="bg-white/50 text-charcoal p-10 rounded-md max-w-lg text-center">
-              <p className="font-primary text-4xl mb-2">Our Menu</p>
-              <p className="font-secondary text-lg">Experience flavours prepared with precision.</p>
+            <div className="bg-white/50 text-charcoal p-5 rounded-md max-w-lg text-center md:p-10 lg:p-10">
+              <p className="font-primary text-2xl mb-2 md:text-4xl lg:text-4xl">Our Menu</p>
+              <p className="font-secondary text-sm md:text-md lg:text-lg">Experience flavours prepared with precision.</p>
             </div>
           </div>
         </div>
