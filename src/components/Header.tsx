@@ -53,11 +53,11 @@ const Header = () => {
 
   return (
     <>
-      <div className="h-16 p-4 bg-dusty-rose text-charcoal sticky top-0 z-20 w-full flex justify-between">
+      <div className="h-16 p-4 bg-dusty-rose text-charcoal sticky top-0 z-20 w-full flex justify-between md:w-full lg:w-full">
         <p className='font-primary '>
           <Link to="/">Culinary</Link>
         </p>
-        <nav className="flex gap-4 font-secondary">
+        <nav className="flex gap-4 font-secondary text-sm md:text-md lg:text-lg">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/menu-and-bookings">Menu and Bookings</NavLink>
           <NavLink to="/digital-menu">Digital Menu</NavLink>
