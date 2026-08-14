@@ -15,8 +15,8 @@ const Header = () => {
             className="w-full h-91 object-cover"
           />
 
-          <div className="text-charcoal absolute inset-0 flex flex-col items-center justify-center">
-            <div className="bg-white/50 p-5 rounded-md max-w-lg text-center md:p-10 lg:p-10">
+          <div className="text-charcoal absolute inset-0 flex flex-col items-center justify-center ">
+            <div className="bg-white/50 p-5 rounded-md max-w-3/5 text-center md:p-10 lg:p-10 ">
               <p className="text-2xl font-primary md:text-3xl lg:text-4xl">Welcome to Culinary</p>
               <p className="text-xl font-secondary md:text-2xl lg:text-3xl">Our Collection</p>
               <p className="text-sm font-secondary md:text-md lg:text-lg">
@@ -39,7 +39,7 @@ const Header = () => {
           />
 
           <div className="absolute inset-0 flex justify-center items-center">
-            <div className="bg-white/50 text-charcoal p-5 rounded-md max-w-lg text-center md:p-10 lg:p-10">
+            <div className="bg-white/50 text-charcoal p-5 rounded-md max-w-3/5 text-center md:p-10 lg:p-10">
               <p className="font-primary text-2xl mb-2 md:text-4xl lg:text-4xl">Our Menu</p>
               <p className="font-secondary text-sm md:text-md lg:text-lg">Experience flavours prepared with precision.</p>
             </div>
@@ -57,7 +57,7 @@ const Header = () => {
         <p className='font-primary '>
           <Link to="/">Culinary</Link>
         </p>
-        <nav className="flex gap-4 font-secondary text-sm md:text-md lg:text-lg">
+        <nav className="flex gap-4 font-secondary [&>a]:text-xs md:[&>a]:text-base lg:[&>a]:text-lg">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/menu-and-bookings">Menu and Bookings</NavLink>
           <NavLink to="/digital-menu">Digital Menu</NavLink>

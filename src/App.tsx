@@ -56,7 +56,7 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="px-0 py-0 flex-1">
+      <div className="w-full max-w-5xl px-4 sm:px-6 mx-auto flex-1">
         <Routes>
           <Route
             path="/"
