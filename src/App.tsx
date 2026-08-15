@@ -34,7 +34,7 @@ function App() {
         const mappedMeals: MealData[] = items.map((meal: any) => ({
           mealId: Number(meal.idMeal) || 0,
           mealName: meal.strMeal || "Unknown meal",
-          mealPrice: Number((Math.random() * 18 + 5).toFixed(2)),
+          mealPrice: Number((Math.random() * 12 + 5).toFixed(2)),
           mealImage: meal.strMealThumb || "",
         }))
 

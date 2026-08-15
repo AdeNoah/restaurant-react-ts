@@ -16,10 +16,10 @@ const Header = () => {
           />
 
           <div className="text-charcoal absolute inset-0 flex flex-col items-center justify-center ">
-            <div className="bg-white/50 p-5 rounded-md max-w-3/5 text-center md:p-10 lg:p-10 ">
-              <p className="text-2xl font-primary md:text-3xl lg:text-4xl">Welcome to Culinary</p>
-              <p className="text-xl font-secondary md:text-2xl lg:text-3xl">Our Collection</p>
-              <p className="text-sm font-secondary md:text-md lg:text-lg">
+            <div className="bg-white/50 p-5 rounded-md max-w-4/5 text-center md:p-10 lg:p-10 ">
+              <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-primary">Welcome to Culinary</p>
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-secondary">Our Collection</p>
+              <p className="text-xs sm:text-sm md:text-base lg:text-lg font-secondary">
                 A visual journey through our gastronomic creations, every plate is a
                 canvas, every dish a masterpiece.
               </p>
@@ -39,9 +39,9 @@ const Header = () => {
           />
 
           <div className="absolute inset-0 flex justify-center items-center">
-            <div className="bg-white/50 text-charcoal p-5 rounded-md max-w-3/5 text-center md:p-10 lg:p-10">
-              <p className="font-primary text-2xl mb-2 md:text-4xl lg:text-4xl">Our Menu</p>
-              <p className="font-secondary text-sm md:text-md lg:text-lg">Experience flavours prepared with precision.</p>
+            <div className="bg-white/50 text-charcoal p-5 rounded-md max-w-4/5 text-center md:p-10 lg:p-10">
+              <p className="font-primary text-xl sm:text-2xl md:text-4xl lg:text-4xl mb-2">Our Menu</p>
+              <p className="font-secondary text-xs sm:text-sm md:text-base lg:text-lg">Experience flavours prepared with precision.</p>
             </div>
           </div>
         </div>
@@ -53,14 +53,14 @@ const Header = () => {
 
   return (
     <>
-      <div className="h-16 p-4 bg-dusty-rose text-charcoal sticky top-0 z-20 w-full flex justify-between md:w-full lg:w-full">
-        <p className='font-primary '>
+      <div className="h-fit p-4 bg-dusty-rose text-charcoal sticky top-0 z-20 flex justify-between items-center">
+        <p className='font-primary mr-4 text-lg sm:text-xl md:text-2xl'>
           <Link to="/">Culinary</Link>
         </p>
-        <nav className="flex gap-4 font-secondary [&>a]:text-xs md:[&>a]:text-base lg:[&>a]:text-lg">
+        <nav className="flex gap-1.5 font-secondary text-sm sm:text-base md:text-lg md:gap-4 lg:text-xl lg:gap-4">
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/menu-and-bookings">Menu and Bookings</NavLink>
-          <NavLink to="/digital-menu">Digital Menu</NavLink>
+          <NavLink to="/menu-and-bookings">Bookings</NavLink>
+          <NavLink to="/digital-menu">Menu</NavLink>
           <NavLink to="/favorites">Favorites</NavLink>
           <NavLink to="/about">About</NavLink>
         </nav>
