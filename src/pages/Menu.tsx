@@ -1,5 +1,5 @@
 
-const DigitalMenu = () => {
+const Menu = () => {
   return (
     <div>
       <h1>Digital Menu</h1>
@@ -7,4 +7,4 @@ const DigitalMenu = () => {
   )
 }
 
-export default DigitalMenu
+export default Menu

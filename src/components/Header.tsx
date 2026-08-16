@@ -29,7 +29,7 @@ const Header = () => {
       )
     }
 
-    if (location.pathname === "/menu-and-bookings") {
+    if (location.pathname === "/menu") {
       return (
         <div className="mx-0 w-full px-0 relative h-fit">
           <img
@@ -59,8 +59,8 @@ const Header = () => {
         </p>
         <nav className="flex gap-1.5 font-secondary text-sm sm:text-base md:text-lg md:gap-4 lg:text-xl lg:gap-4">
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/menu-and-bookings">Bookings</NavLink>
-          <NavLink to="/digital-menu">Menu</NavLink>
+          <NavLink to="/menu">Menu</NavLink>
+          <NavLink to="/bookings">Bookings</NavLink>
           <NavLink to="/favorites">Favorites</NavLink>
           <NavLink to="/about">About</NavLink>
         </nav>

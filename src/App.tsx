@@ -3,8 +3,8 @@ import { useEffect, useState } from "react"
 import Header from "./components/Header.tsx"
 import Footer from "./components/Footer.tsx"
 import Home from "./pages/Home.tsx"
-import MenuAndBookings from "./pages/MenuAndBookings.tsx"
-import DigitalMenu from "./pages/DigitalMenu.tsx"
+import Bookings from "./pages/Bookings.tsx"
+import Menu from "./pages/Menu.tsx"
 import Favorites from "./pages/Favorites.tsx"
 import About from "./pages/About.tsx"
 import { type MealData } from "./data/types"
@@ -58,12 +58,9 @@ function App() {
       <Header />
       <div className="w-full max-w-5xl px-4 sm:px-6 mx-auto flex-1">
         <Routes>
-          <Route
-            path="/"
-            element={<Home meals={meals} loading={loading} error={error} />}
-          />
-          <Route path="/menu-and-bookings" element={<MenuAndBookings />} />
-          <Route path="/digital-menu" element={<DigitalMenu />} />
+          <Route path="/" element={<Home meals={meals} loading={loading} error={error} />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/Bookings" element={<Bookings />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/about" element={<About />} />
         </Routes>
