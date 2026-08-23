@@ -1,9 +1,11 @@
 
 const Menu = () => {
   return (
-    <div>
-      <h1>Digital Menu</h1>
-    </div>
+    <>
+      <div className="min-h-screen flex flex-col">
+        
+      </div>
+    </>
   )
 }
 

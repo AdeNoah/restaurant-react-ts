@@ -16,7 +16,7 @@ const Header = () => {
           />
 
           <div className="text-charcoal absolute inset-0 flex flex-col items-center justify-center ">
-            <div className="bg-white/50 p-5 rounded-md max-w-4/5 text-center md:p-10 lg:p-10 ">
+            <div className="bg-white/50 p-5 rounded-md max-w-5/10 text-center md:p-10 lg:p-10 ">
               <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-primary">Welcome to Culinary</p>
               <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-secondary">Our Collection</p>
               <p className="text-xs sm:text-sm md:text-base lg:text-lg font-secondary">
@@ -39,7 +39,7 @@ const Header = () => {
           />
 
           <div className="absolute inset-0 flex justify-center items-center">
-            <div className="bg-white/50 text-charcoal p-5 rounded-md max-w-4/5 text-center md:p-10 lg:p-10">
+            <div className="bg-white/50 text-charcoal p-5 rounded-md max-w-5/10 text-center md:p-10 lg:p-10">
               <p className="font-primary text-xl sm:text-2xl md:text-4xl lg:text-4xl mb-2">Our Menu</p>
               <p className="font-secondary text-xs sm:text-sm md:text-base lg:text-lg">Experience flavours prepared with precision.</p>
             </div>

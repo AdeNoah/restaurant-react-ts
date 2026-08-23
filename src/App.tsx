@@ -1,5 +1,4 @@
-import { Routes, Route } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { Routes, Route, useLocation } from "react-router-dom"
 import Header from "./components/Header.tsx"
 import Footer from "./components/Footer.tsx"
 import Home from "./pages/Home.tsx"
@@ -7,58 +6,16 @@ import Bookings from "./pages/Bookings.tsx"
 import Menu from "./pages/Menu.tsx"
 import Favorites from "./pages/Favorites.tsx"
 import About from "./pages/About.tsx"
-import { type MealData } from "./data/types"
 
 function App() {
-  const [meals, setMeals] = useState<MealData[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  // const mealURL = "https://www.themealdb.com/api/json/v1/1/list.php?a=list"
-  const mealURL = "https://www.themealdb.com/api/json/v1/1/filter.php?a=Canadian"
-  
-  useEffect(() => {
-    const fetchMeals = async () => {
-      setLoading(true)
-      setError(null)
-
-      try {
-        const response = await fetch(mealURL)
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const result = await response.json()
-        const items = Array.isArray(result.meals) ? result.meals : []
-
-        const mappedMeals: MealData[] = items.map((meal: any) => ({
-          mealId: Number(meal.idMeal) || 0,
-          mealName: meal.strMeal || "Unknown meal",
-          mealPrice: Number((Math.random() * 12 + 5).toFixed(2)),
-          mealImage: meal.strMealThumb || "",
-        }))
-
-        setMeals(mappedMeals)
-      } catch (fetchError) {
-        if (fetchError instanceof Error) {
-          setError(fetchError.message)
-        } else {
-          setError("An unknown error occurred while loading meals.")
-        }
-      } finally {
-        setLoading(false)
-      }
-    }
- 
-    fetchMeals()
-  }, [])
+  const location = useLocation()
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="w-full max-w-5xl px-4 sm:px-6 mx-auto flex-1">
+      <div className={`w-full px-4 sm:px-6 mx-auto flex-1 ${location.pathname === "/" ? "max-w-none" : "max-w-full"}`}>
         <Routes>
-          <Route path="/" element={<Home meals={meals} loading={loading} error={error} />} />
+          <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/Bookings" element={<Bookings />} />
           <Route path="/favorites" element={<Favorites />} />
