@@ -1,5 +1,5 @@
-import {type mealData} from "../data/types"
+// import {type mealData} from "../data/types"
 
-const alcoholicDrinkURL
-const nonAlcoholicDrinkURL
-const cocktailURL
+// const alcoholicDrinkURL
+// const nonAlcoholicDrinkURL
+// const cocktailURL
