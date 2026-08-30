@@ -63,7 +63,7 @@ const Menu: React.FC = () => {
   const selectedItems = categories[selectedCategory] ?? []
 
   return (
-    <div className="p-4 flex gap-4">
+    <div className="p-4 px-0 flex gap-4">
       <aside className="p-4 bg-cream mb-4 rounded-lg shadow-lg size-fit">
         <p className="border-b font-primary font-bold text-lg text-center mb-4">CATEGORY</p>
 
