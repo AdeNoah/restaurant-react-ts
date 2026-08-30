@@ -29,7 +29,7 @@ const Header = () => {
       )
     }
 
-    if (location.pathname === "/menu") {
+    if (location.pathname === "/menu" || location.pathname.startsWith("/menu/")) {
       return (
         <div className="mx-0 w-full px-0 relative h-fit">
           <img

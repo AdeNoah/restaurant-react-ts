@@ -36,7 +36,7 @@ const Home: React.FC = () => {
 
   if (error) {
     return (
-      <div className="p-8 font-secondary text-center font-medium text-terracotta">
+      <div className="p-8 font-secondary text-center text-lg font-medium text-terracotta">
         Error loading meals: {error}
       </div>
     )

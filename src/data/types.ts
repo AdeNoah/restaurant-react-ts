@@ -1,4 +1,4 @@
-// first API call
+
 export interface MealData {
   mealId: number
   mealName: string
@@ -12,4 +12,3 @@ export interface HomeProps {
   error: string | null
 }
 
-// second API call
