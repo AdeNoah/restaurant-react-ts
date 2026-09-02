@@ -75,6 +75,26 @@ const Menu: React.FC = () => {
     }
   }
 
+  const handleToggleFavorite = (meal: MealData, isFav: boolean) => {
+    try {
+      if (isFav) {
+        const currentFavorites = JSON.parse(localStorage.getItem("favorites") ?? "[]")
+        const favorites = Array.isArray(currentFavorites) ? currentFavorites : []
+
+        favorites.push(meal)
+        localStorage.setItem("favorites", JSON.stringify(favorites))
+      } else {  
+        const currentFavorites = JSON.parse(localStorage.getItem("favorites") ?? "[]")
+        const favorites = Array.isArray(currentFavorites) ? currentFavorites : []
+
+        const updatedFavorites = favorites.filter((fav: MealData) => fav.mealId !== meal.mealId)
+        localStorage.setItem("favorites", JSON.stringify(updatedFavorites))
+      }
+    } catch (error) {
+      console.error("Unable to update favorites:", error)
+    }
+  }
+
   return (
     <div className="p-4 px-0 flex gap-4">
       <aside className="p-4 bg-cream mb-4 rounded-lg shadow-lg size-fit">
@@ -151,7 +171,7 @@ const Menu: React.FC = () => {
               type="button"
               onClick={(event) => {
                 event.stopPropagation()
-                setIsFavorited(!isFavorited)
+                setIsFavorited(!isFavorited);                handleToggleFavorite(selectedMeal, !isFavorited)
               }}
               className="absolute left-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full transition hover:opacity-90 focus:outline-none"
               aria-label="Add to favorites"
