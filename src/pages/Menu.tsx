@@ -1,6 +1,5 @@
-// import { BrowserRouter } from 'react-router-dom';
-// Routes, Route, Link, Outlet, useParams
 
+import { Heart } from "lucide-react"
 import { Link, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import type { MealData } from "../data/types"
@@ -28,6 +27,8 @@ const Menu: React.FC = () => {
   const [categories, setCategories] = useState<Record<string, MealData[]>>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedMeal, setSelectedMeal] = useState<MealData | null>(null)
+  const [isFavorited, setIsFavorited] = useState(false)
 
   useEffect(() => {
     const loadMenu = async () => {
@@ -61,6 +62,18 @@ const Menu: React.FC = () => {
 
   const selectedCategory = categoryLinks.some((category) => category.key === id) ? id! : "starters"
   const selectedItems = categories[selectedCategory] ?? []
+
+  const handleAddMealToBooking = (meal: MealData) => {
+    try {
+      const currentMeals = JSON.parse(localStorage.getItem("mealsToBooking") ?? "[]")
+      const mealsToBooking = Array.isArray(currentMeals) ? currentMeals : []
+
+      mealsToBooking.push(meal)
+      localStorage.setItem("mealsToBooking", JSON.stringify(mealsToBooking))
+    } catch (error) {
+      console.error("Unable to save meal to booking list:", error)
+    }
+  }
 
   return (
     <div className="p-4 px-0 flex gap-4">
@@ -100,10 +113,22 @@ const Menu: React.FC = () => {
         {!loading && !error && selectedItems.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {selectedItems.map((item) => (
-              <article key={item.mealId} className="overflow-hidden rounded-md bg-white shadow">
+              <article
+                key={item.mealId}
+                onClick={() => setSelectedMeal(item)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault()
+                    setSelectedMeal(item)
+                  }
+                }}  
+                tabIndex={0}
+                role="button"
+                className="cursor-pointer overflow-hidden rounded-md bg-cream shadow transition hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-terracotta"
+              >
                 <img src={item.mealImage} alt={item.mealName} className="h-40 w-full object-cover" />
                 <div className="p-3">
-                  <h2 className="font-secondary font-semibold">{item.mealName}</h2>
+                  <h2 className="font-primary font-semibold">{item.mealName}</h2>
                   <p>{formatCurrency(item.mealPrice)}</p>
                 </div>
               </article>
@@ -111,6 +136,66 @@ const Menu: React.FC = () => {
           </div>
         )}
       </div>
+
+      {selectedMeal && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/25 p-4"
+          onClick={() => setSelectedMeal(null)}
+        >
+          <div
+            className="relative w-full max-w-lg overflow-hidden rounded-xl bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation()
+                setIsFavorited(!isFavorited)
+              }}
+              className="absolute left-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full transition hover:opacity-90 focus:outline-none"
+              aria-label="Add to favorites"
+            >
+              <Heart
+                size={32}
+                color={isFavorited ? "#a23917" : "#fff8f6"}
+                fill={isFavorited ? "#a23917" : "#fff8f6"}
+              />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setSelectedMeal(null)}
+              className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-cream text-lg font-bold text-charcoal shadow"
+              aria-label="Close meal details"
+            >
+              ×
+            </button>
+
+            <img src={selectedMeal.mealImage} alt={selectedMeal.mealName} className="h-64 w-full object-cover" />
+
+            <div className="p-6">
+              <p className="font-secondary text-xs uppercase tracking-[0.2em] text-terracotta">Meal details</p>
+              <h2 className="mt-2 font-primary text-3xl text-charcoal">{selectedMeal.mealName}</h2>
+              <p className="mt-3 text-xl font-semibold text-charcoal">{formatCurrency(selectedMeal.mealPrice)}</p>
+              <p className="mt-4 font-secondary text-base leading-7 text-charcoal/80">
+                Freshly prepared in our kitchen with quality ingredients and a flavor profile made to impress.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => {
+                  handleAddMealToBooking(selectedMeal)
+                  setSelectedMeal(null)
+                }}
+                className="mt-6 w-full rounded-md bg-terracotta px-4 py-3 font-primary text-lg text-cream transition hover:opacity-90"
+              >
+                Book Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -41,7 +41,7 @@ const Header = () => {
           <div className="absolute inset-0 flex justify-center items-center">
             <div className="bg-white/50 text-charcoal p-5 rounded-md max-w-5/10 text-center md:p-10 lg:p-10">
               <p className="font-primary text-xl sm:text-2xl md:text-4xl lg:text-4xl mb-2">Our Menu</p>
-              <p className="font-secondary text-xs sm:text-sm md:text-base lg:text-lg">Experience flavours prepared with precision.</p>
+              <p className="font-secondary text-xs sm:text-sm md:text-base lg:text-lg">Experience flavours prepared with precision. Browse our selection and discover your next favourite dish.</p>
             </div>
           </div>
         </div>
