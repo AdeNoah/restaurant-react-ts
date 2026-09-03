@@ -68,7 +68,14 @@ const Menu: React.FC = () => {
       const currentMeals = JSON.parse(localStorage.getItem("mealsToBooking") ?? "[]")
       const mealsToBooking = Array.isArray(currentMeals) ? currentMeals : []
 
-      mealsToBooking.push(meal)
+      const mealAlreadyAdded = mealsToBooking.some((bookingMeal) => bookingMeal.mealId === meal.mealId)
+
+      if (mealAlreadyAdded) {
+        alert("This meal has already been added to booking")
+        return
+      }
+
+      mealsToBooking.push({ ...meal, quantity: 1 })
       localStorage.setItem("mealsToBooking", JSON.stringify(mealsToBooking))
     } catch (error) {
       console.error("Unable to save meal to booking list:", error)
@@ -221,7 +228,6 @@ const Menu: React.FC = () => {
 }
 
 export default Menu
-
 
 
 
