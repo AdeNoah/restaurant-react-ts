@@ -1,16 +1,133 @@
 
+import { useState, useEffect, useRef } from "react"
 import aboutDiner from "../assets/aboutDiner.png"
 import aboutMapLocation from "../assets/aboutMapLocation.png"
 import aboutSubscriptions from "../assets/aboutSubscriptions.png"
 
+import { type SuggestionsOptions, type SuggestionsDropdownProps } from "../data/types"
+
+const SuggestionsDropdown = ({
+  options,
+  selected,
+  onChange,
+  placeholder = "Select a topic to make a suggestion",
+}: SuggestionsDropdownProps) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [])
+
+  return (
+    <div ref={ref} className="relative w-full">
+      <button
+        type="button"
+        onClick={() => setIsOpen((isDropdownOpen) => !isDropdownOpen)}
+        className="flex w-full items-center justify-between rounded border border-charcoal/10 bg-white px-3 py-3 text-left font-secondary text-xs text-charcoal"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+      >
+        <span>{selected?.label ?? placeholder}</span>
+        <span aria-hidden="true">{isOpen ? "\u25B2" : "\u25BC"}</span>
+      </button>
+
+      {isOpen && (
+        <ul
+          className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded border border-charcoal bg-white shadow"
+          role="listbox"
+        >
+          {options.map((option) => (
+            <li key={option.value} role="option" aria-selected={selected?.value === option.value}>
+              <button
+                type="button"
+                onClick={() => {
+                  onChange(option)
+                  setIsOpen(false)
+                }}
+                className="w-full px-3 py-2 text-left font-secondary text-xs hover:bg-cream"
+              >
+                {option.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
 const About = () => {
+
+  const hours = [
+    { days: "Mon - Thu", time: "5:00 PM - 10:00 PM" },
+    { days: "Fri - Sat", time: "5:00 PM - 11:00 PM" },
+    { days: "Sunday",    time: "12:00 PM - 8:00 PM" },
+  ]
+
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    message: "",
+  })
+  const suggestionOptions: SuggestionsOptions[] = [
+    { label: "Menu", value: "menu" },
+    { label: "Service", value: "service" },
+    { label: "Events", value: "events" },
+  ]
+  const [selectedSuggestion, setSelectedSuggestion] = useState<SuggestionsOptions | null>(null)
+  const [suggestionMessage, setSuggestionMessage] = useState("")
+
+  const handleFormInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({...form, [e.target.name]: e.target.value})
+  }
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!form.firstName.trim() || !form.lastName.trim() || !form.email.trim() || !form.message.trim()) {
+      return
+    }
+
+    console.log("form submitted:", form)
+    setForm({
+      firstName: "",
+      lastName: "",
+      email: "",
+      message: "",
+    })
+  }
+
+  const handleSuggestionSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!selectedSuggestion || !suggestionMessage.trim()) {
+      return
+    }
+
+    const submittedSuggestion = {
+      topic: selectedSuggestion?.value ?? "",
+      message: suggestionMessage,
+    }
+
+    console.log("suggestion submitted:", submittedSuggestion)
+    setSelectedSuggestion(null)
+    setSuggestionMessage("")
+  }
+
   return (
     <main className="bg-cream text-charcoal">
       <section className="grid items-center gap-8 py-10 md:grid-cols-2 md:gap-12 md:py-12">
-        <div className="max-w-xl">
-          <h1 className="font-primary text-4xl leading-tight sm:text-5xl">About Us</h1>
+        <div className="px-4 max-w-xl md:px-8">
+          <h1 className="font-primary text-4xl leading-tight sm:text-4xl md:text-7xl">About Us</h1>
           <p className="mt-4 max-w-md font-secondary text-sm leading-6 text-charcoal/75">
-            We value the success of our community. Whether you wish to learn something new,
+            We value our community, Whether you wish to learn something new,
             indulge in a culinary adventure, or simply enjoy a memorable experience with us,
             we are here to make it happen.
           </p>
@@ -24,12 +141,30 @@ const About = () => {
       </section>
 
       <section className="grid items-stretch gap-8 py-4 md:grid-cols-2 md:gap-12">
-        <div className="bg-white p-8 sm:p-10">
-          <h2 className="font-primary text-2xl">Find Us</h2>
-          <div className="mt-5 space-y-3 font-secondary text-xs leading-5 text-charcoal/75">
-            <p><strong className="font-semibold text-charcoal">ADDRESS</strong><br />123 Culinary Avenue<br />City Centre, City<br />Country</p>
-            <p><strong className="font-semibold text-charcoal">HOURS</strong><br />Mon - Thu &nbsp;&nbsp; 5:00 PM - 10:00 PM<br />Fri - Sat &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5:00 PM - 11:00 PM<br />Sunday &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 12:00 PM - 8:00 PM</p>
-          </div>
+        <div className="bg-white p-8 sm:p-10 text-charcoal">
+          <h2 className="font-primary text-3xl uppercase tracking-[0.2em]">
+            Address
+          </h2>
+          <address className="not-italic  font-secondary text-sm tracking-[0.1em] leading-6">
+            123 Culinary Avenue
+            <br />
+            City Centre, City
+            <br />
+            Country
+          </address>
+
+          <h2 className="font-primary text-3xl uppercase tracking-[0.2em] tracking-[0.2em] mt-4">
+            Hours
+          </h2>
+          <dl>
+            {hours.map(({days: days, time: time}) => (
+              <div key={days} className="font-secondary text-sm leading-6 tracking-[0.1em]">
+                {/* <p>{days} {time}</p> */}
+                <dt>{days}</dt>
+                <dd>{time}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
         <img
@@ -42,25 +177,88 @@ const About = () => {
       <section className="grid gap-8 py-12 md:grid-cols-2 md:gap-12">
         <div>
           <h2 className="font-primary text-2xl">Direct Inquiries</h2>
-          <p className="mt-1 font-secondary text-xs text-charcoal/60">For reservations, events, or general questions, please drop us a message.</p>
-          <form className="mt-6 space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2"><input aria-label="Your name" placeholder="Your Name" className="border-b border-charcoal/20 bg-transparent px-1 py-2 font-secondary text-xs outline-none placeholder:text-charcoal/45" /><input aria-label="Last name" placeholder="Last Name" className="border-b border-charcoal/20 bg-transparent px-1 py-2 font-secondary text-xs outline-none placeholder:text-charcoal/45" /></div>
-            <input aria-label="Email address" placeholder="Email Address" type="email" className="w-full border-b border-charcoal/20 bg-transparent px-1 py-2 font-secondary text-xs outline-none placeholder:text-charcoal/45" />
-            <textarea aria-label="Your message" placeholder="Your Message" rows={3} className="w-full resize-none border-b border-charcoal/20 bg-transparent px-1 py-2 font-secondary text-xs outline-none placeholder:text-charcoal/45" />
-            <button type="submit" className="bg-terracotta px-7 py-2 font-secondary text-[10px] font-semibold uppercase tracking-wider text-white">Send Message</button>
+          <p className="mt-1 font-secondary text-xs text-charcoal/60">
+            For reservations, events, or general questions, please drop us a message.
+          </p>
+
+          <form onSubmit={handleFormSubmit} className="mt-4 space-y-4">
+            <div className="grid grid-cols-2  gap-4">
+              <input
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                value={form.firstName}
+                onChange={handleFormInputChange}
+                className="w-full border-b border-black bg-transparent pb-1 text-sm outline-none  focus:border-b-3 "
+              />
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                value={form.lastName}
+                onChange={handleFormInputChange}
+                className="w-full border-b border-black bg-transparent pb-1 text-sm outline-none  focus:border-b-3 "
+              />
+            </div>
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              value={form.email}
+              onChange={handleFormInputChange}
+              className="w-full border-b border-black  bg-transparent pb-1 text-sm outline-none focus:border-b-3"
+            />
+
+            <textarea
+              name="message"
+              placeholder="Your Message"
+              rows={5}
+              value={form.message}
+              onChange={handleFormInputChange}
+              className="w-full border-b border-black bg-transparent pb-1 text-sm outline-none focus:border-b-3 resize-none"
+            />
+
+            <button
+              type="submit"
+              disabled={!form.firstName.trim() || !form.lastName.trim() || !form.email.trim() || !form.message.trim()}
+              className="bg-terracotta text-cream text-sm font-semibold uppercase px-8 py-2"
+            >
+              Send Message
+            </button>
           </form>
+
         </div>
         <div className="bg-white/60 p-7 sm:p-9">
           <h2 className="font-primary text-2xl">Community Suggestions</h2>
           <p className="mt-1 font-secondary text-xs text-charcoal/60">Your ideas drive our menu. Tell us what you would like to see.</p>
-          <form className="mt-6 space-y-4">
-            <select aria-label="Suggestion topic" defaultValue="" className="w-full border border-charcoal/10 bg-white px-3 py-3 font-secondary text-xs text-charcoal/65 outline-none"><option value="" disabled>Topics of Suggestion</option><option>Menu</option><option>Service</option><option>Events</option></select>
-            <textarea aria-label="Share your thoughts" placeholder="Share your thoughts with our culinary team..." rows={3} className="w-full resize-none border border-charcoal/10 bg-white px-3 py-3 font-secondary text-xs outline-none placeholder:text-charcoal/45" />
-            <button type="submit" className="w-full border border-charcoal/40 bg-transparent py-2 font-secondary text-[10px] font-semibold uppercase tracking-wider text-charcoal">Submit Suggestion</button>
+
+          <form onSubmit={handleSuggestionSubmit} className="mt-6 space-y-4">
+            <SuggestionsDropdown
+              options={suggestionOptions}
+              selected={selectedSuggestion}
+              onChange={setSelectedSuggestion}
+            />
+            <textarea
+              aria-label="Share your thoughts with React"
+              placeholder="Share your thoughts with our culinary team..."
+              rows={3}
+              value={suggestionMessage}
+              onChange={(e) => setSuggestionMessage(e.target.value)}
+              className="w-full resize-none border border-charcoal/10 bg-white px-3 py-3 font-secondary text-xs outline-none placeholder:text-charcoal/45"
+            />
+            <button
+              type="submit"
+              disabled={!selectedSuggestion || !suggestionMessage.trim()}
+              className="w-full border border-charcoal bg-transparent py-2 font-secondary text-sm font-semibold uppercase tracking-wider text-charcoal disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Submit Suggestion
+            </button>
           </form>
+
         </div>
       </section>
-      <section className="relative overflow-hidden rounded-sm py-16">
+      <section className="relative overflow-hidden rounded-sm py-16 text-cream">
         <img src={aboutSubscriptions} alt="A warm restaurant dining scene" className="absolute inset-0 h-full w-full object-cover" />
         <div className="relative mx-auto max-w-xl bg-cream/90 px-6 py-8 text-center sm:px-12">
           <h2 className="font-primary text-3xl">Join the Table</h2>
