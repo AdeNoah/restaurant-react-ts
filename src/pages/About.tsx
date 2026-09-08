@@ -1,4 +1,4 @@
-
+// the imports for the about page
 import { useState, useEffect, useRef } from "react"
 import aboutDiner from "../assets/aboutDiner.png"
 import aboutMapLocation from "../assets/aboutMapLocation.png"
@@ -6,6 +6,7 @@ import aboutSubscriptions from "../assets/aboutSubscriptions.png"
 
 import { type SuggestionsOptions, type SuggestionsDropdownProps } from "../data/types"
 
+// component for the suggestions logic and dropdown menu
 const SuggestionsDropdown = ({
   options,
   selected,
@@ -64,8 +65,10 @@ const SuggestionsDropdown = ({
   )
 }
 
+// the main about page component
 const About = () => {
 
+  
   const hours = [
     { days: "Mon - Thu", time: "5:00 PM - 10:00 PM" },
     { days: "Fri - Sat", time: "5:00 PM - 11:00 PM" },
@@ -83,8 +86,27 @@ const About = () => {
     { label: "Service", value: "service" },
     { label: "Events", value: "events" },
   ]
+
+  // all the useStates for the about page, including the form, suggestion, and subscription states
   const [selectedSuggestion, setSelectedSuggestion] = useState<SuggestionsOptions | null>(null)
   const [suggestionMessage, setSuggestionMessage] = useState("")
+  const [subscriptionEmail, setSubscriptionEmail] = useState("")
+  const [subscriptionList, setSubscriptionList] = useState<string[]>(() => {
+    const storedSubscriptions = localStorage.getItem("subscription list")
+
+    if (!storedSubscriptions) {
+      return []
+    }
+
+    try {
+      const parsedSubscriptions: unknown = JSON.parse(storedSubscriptions)
+      return Array.isArray(parsedSubscriptions) && parsedSubscriptions.every((email) => typeof email === "string")
+        ? parsedSubscriptions
+        : []
+    } catch {
+      return []
+    }
+  })
 
   const handleFormInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({...form, [e.target.name]: e.target.value})
@@ -121,7 +143,24 @@ const About = () => {
     setSuggestionMessage("")
   }
 
+  // button to handle subscription form submission and store the email in localStorage if it is not already present in the subscription list
+  const handleSubscriptionSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const email = subscriptionEmail.trim()
+
+    if (!email || subscriptionList.includes(email)) {
+      return
+    }
+
+    const updatedSubscriptionList = [...subscriptionList, email]
+    setSubscriptionList(updatedSubscriptionList)
+    localStorage.setItem("subscription list", JSON.stringify(updatedSubscriptionList))
+    console.log("subscription list updated:", updatedSubscriptionList)
+    setSubscriptionEmail("")
+  }
+
   return (
+    // the about us section
     <main className="bg-cream text-charcoal">
       <section className="grid items-center gap-8 py-10 md:grid-cols-2 md:gap-12 md:py-12">
         <div className="px-4 max-w-xl md:px-8">
@@ -140,6 +179,7 @@ const About = () => {
         />
       </section>
 
+      {/* the address and time section */}
       <section className="grid items-stretch gap-8 py-4 md:grid-cols-2 md:gap-12">
         <div className="bg-white p-8 sm:p-10 text-charcoal">
           <h2 className="font-primary text-3xl uppercase tracking-[0.2em]">
@@ -263,7 +303,26 @@ const About = () => {
         <div className="relative mx-auto max-w-xl bg-cream/90 px-6 py-8 text-center sm:px-12">
           <h2 className="font-primary text-3xl">Join the Table</h2>
           <p className="mx-auto mt-2 max-w-sm font-secondary text-xs leading-5 text-charcoal/70">Subscribe to receive exclusive invitations to tasting menus, seasonal events, and culinary insights directly from our kitchen.</p>
-          <form className="mx-auto mt-5 flex max-w-sm flex-col gap-2 sm:flex-row"><input aria-label="Email for subscription" type="email" placeholder="Enter your email" className="min-w-0 flex-1 bg-white px-3 py-3 font-secondary text-xs outline-none placeholder:text-charcoal/45" /><button type="submit" className="bg-terracotta px-6 py-3 font-secondary text-[10px] font-semibold uppercase tracking-wider text-white">Subscribe</button></form>
+
+          {/* the subscription section displayed */}
+          <form onSubmit={handleSubscriptionSubmit} className="mx-auto mt-5 flex max-w-sm flex-col gap-2 sm:flex-row">
+            <input
+              aria-label="Email for subscription"
+              type="email"
+              placeholder="Enter your email"
+              value={subscriptionEmail}
+              onChange={(e) => setSubscriptionEmail(e.target.value)}
+              required
+              className="min-w-0 flex-1 bg-white px-3 py-3 font-secondary text-xs text-charcoal outline-none placeholder:text-charcoal/45"
+            />
+            <button
+              type="submit"
+              disabled={!subscriptionEmail.trim()}
+              className="bg-terracotta px-6 py-3 font-secondary text-[10px] font-semibold uppercase tracking-wider text-white"
+            >
+              Subscribe
+            </button>
+          </form>
         </div>
       </section>
     </main>

@@ -1,4 +1,4 @@
-
+// imports for the menu page, including React, routing, API calls, and utility functions
 import { Heart } from "lucide-react"
 import { Link, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
@@ -13,6 +13,7 @@ import {
 } from "../api/MenuAPI"
 import { formatCurrency } from "../utilities/currencyFormat"
 
+//  category links for the sidebar navigation
 const categoryLinks = [
   { key: "starters", label: "Starters", path: "/menu/starters" },
   { key: "main-courses", label: "Main Courses", path: "/menu/main-courses" },
@@ -22,6 +23,7 @@ const categoryLinks = [
   { key: "cocktails", label: "Cocktails", path: "/menu/cocktails" },
 ]
 
+// main Menu component that fetches and displays meals based on the selected category
 const Menu: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const [categories, setCategories] = useState<Record<string, MealData[]>>({})
@@ -103,7 +105,11 @@ const Menu: React.FC = () => {
   }
 
   return (
+
+    // the main menu page layout with the sidebar for categories and the main content area for meals
     <div className="p-4 px-0 flex gap-4">
+
+      {/* sidebar for categories */}
       <aside className="p-4 bg-cream mb-4 rounded-lg shadow-lg size-fit">
         <p className="border-b font-primary font-bold text-lg text-center mb-4">CATEGORY</p>
 
@@ -126,6 +132,8 @@ const Menu: React.FC = () => {
         </div>
       </aside>
 
+
+{/* section for the main menu content */}
       <div className="flex-1">
         {loading && <p className="font-secondary text-lg text-charcoal">Loading menu...</p>}
 
@@ -164,6 +172,7 @@ const Menu: React.FC = () => {
         )}
       </div>
 
+{/* the overlay for the meal details modal and to prevent clicks from propagating for booking and favoriting section */}
       {selectedMeal && (
         <div
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/25 p-4"
