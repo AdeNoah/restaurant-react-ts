@@ -1,7 +1,10 @@
 // imports 
+import { useMemo, useState } from "react"
 import PaystackPop from "@paystack/inline-js"
 import type { MealData } from "../data/types"
 import { formatCurrency } from "../utilities/currencyFormat"
+import OrderSuccess from "./OrderSuccess"
+import OrderFailed from "./OrderFailed"
 
 const TEST_API_KEY = import.meta.env.VITE_TEST_API_KEY ?? ""
 
@@ -17,30 +20,52 @@ type CheckOutAndOrderProps = {
 const CheckOutAndOrder = ({ meal, onClose }: CheckOutAndOrderProps) => {
   const quantity = meal.quantity ?? 1
   const totalPrice = meal.mealPrice * quantity
+  const [email, setEmail] = useState("")
+  const [paymentState, setPaymentState] = useState<"checkout" | "success" | "failed">("checkout")
+
+  const paymentReference = useMemo(
+    () => `meal-${meal.mealId}-${Date.now()}`,
+    [meal.mealId],
+  )
 
   const handlePaystackCheckout = () => {
-    if (!TEST_API_KEY) {
-      alert("Please add VITE_TEST_API_KEY to your .env file before testing Paystack.")
-      return
+    try {
+      if (!TEST_API_KEY) {
+        throw new Error("Please add VITE_TEST_API_KEY to your .env file before testing Paystack.")
+      }
+
+      if (!email || !email.includes("@") || !email.includes(".")) {
+        throw new Error("Please enter a valid email address.")
+      }
+
+      const payment = new PaystackPop()
+
+      payment.newTransaction({
+        key: TEST_API_KEY,
+        email,
+        amount: Math.round(totalPrice * 100),
+        currency: "NGN",
+        ref: paymentReference,
+        label: meal.mealName,
+        onSuccess: () => {
+          setPaymentState("success")
+        },
+        onCancel: () => {
+          setPaymentState("failed")
+        },
+      })
+    } catch (error) {
+      console.error("Paystack checkout error:", error)
+      setPaymentState("failed")
     }
+  }
 
-    const payment = new PaystackPop()
+  if (paymentState === "success") {
+    return <OrderSuccess onClose={onClose} />
+  }
 
-    payment.newTransaction({
-      key: TEST_API_KEY,
-      email: "customer@example.com",
-      amount: totalPrice * 100,
-      currency: "NGN",
-      ref: `meal-${meal.mealId}-${Date.now()}`,
-      label: meal.mealName,
-      onSuccess: (response) => {
-        console.log("Payment successful:", response)
-        onClose()
-      },
-      onCancel: () => {
-        console.log("Payment cancelled")
-      },
-    })
+  if (paymentState === "failed") {
+    return <OrderFailed onClose={onClose} />
   }
 
   return (
@@ -70,9 +95,10 @@ const CheckOutAndOrder = ({ meal, onClose }: CheckOutAndOrderProps) => {
             <label className="block text-xs uppercase tracking-wide text-charcoal/60">Email</label>
             <input
               type="email"
-              value="customer@example.com"
-              readOnly
-              className="mt-1 w-full rounded-md border border-charcoal/20 bg-white px-3 py-2 text-sm text-charcoal outline-none"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@example.com"
+              className="mt-1 w-full rounded-md border border-charcoal/20 bg-white px-3 py-2 text-sm text-charcoal outline-none focus:border-terracotta"
             />
           </div>
 
@@ -90,7 +116,7 @@ const CheckOutAndOrder = ({ meal, onClose }: CheckOutAndOrderProps) => {
             <label className="block text-xs uppercase tracking-wide text-charcoal/60">Reference</label>
             <input
               type="text"
-              value={`meal-${meal.mealId}-${Date.now()}`}
+              value={paymentReference}
               readOnly
               className="mt-1 w-full rounded-md border border-charcoal/20 bg-white px-3 py-2 text-sm text-charcoal outline-none"
             />
