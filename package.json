@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@paystack/inline-js": "^2.25.0",
     "@tailwindcss/vite": "^4.3.0",
     "currency": "^4.1.0",
     "format": "^0.2.2",

@@ -1,6 +1,7 @@
 // imports 
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useEffect, useState } from "react"
+import CheckOutAndOrder from "../components/CheckOutAndOrder"
 import type { MealData } from "../data/types"
 import { formatCurrency } from "../utilities/currencyFormat"
 
@@ -23,6 +24,7 @@ const getStoredBookingMeals = (): BookingMeal[] => {
 // the bookings component that fetches and displays meals added to bookings from localStorage
 const Bookings = () => {
   const [bookingMeals, setBookingMeals] = useState<BookingMeal[]>([])
+  const [selectedMealForCheckout, setSelectedMealForCheckout] = useState<BookingMeal | null>(null)
   const [loading, setLoading] = useState(true)
 
   // logic to set meal to local storage 
@@ -100,7 +102,7 @@ const Bookings = () => {
                       <button
                         type="button"
                         onClick={() => handleReduceQuantity(meal.mealId)}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-charcoal text-cream transition hover:opacity-90"
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-charcoal text-cream transition hover:opacity-80 active:opacity-90"
                         aria-label={`Reduce quantity for ${meal.mealName}`}
                       >
                         <ChevronLeft size={18} />
@@ -111,7 +113,7 @@ const Bookings = () => {
                       <button
                         type="button"
                         onClick={() => handleIncreaseQuantity(meal.mealId)}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-charcoal text-cream transition hover:opacity-90"
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-charcoal text-cream transition hover:opacity-80 active:opacity-90"
                         aria-label={`Increase quantity for ${meal.mealName}`}
                       >
                         <ChevronRight size={18} />
@@ -121,7 +123,8 @@ const Bookings = () => {
                     <div className="mt-3 flex gap-2">
                       <button
                         type="button"
-                        className="flex-1 rounded-md bg-terracotta px-3 py-2 font-secondary text-sm font-semibold text-cream transition hover:opacity-90"
+                        onClick={() => setSelectedMealForCheckout(meal)}
+                        className="flex-1 rounded-md bg-terracotta px-3 py-2 font-secondary text-sm font-semibold text-cream transition hover:opacity-80 active:opacity-90"
                         aria-label={`Checkout ${meal.mealName}`}
                       >
                         Checkout
@@ -140,6 +143,24 @@ const Bookings = () => {
                 </article>
               )
             })}
+          </div>
+        </div>
+      )}
+
+      {/* condition check if the checkout button is clickec or if the payment overlay is closed */}
+      {selectedMealForCheckout && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setSelectedMealForCheckout(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-xl bg-white p-5 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <CheckOutAndOrder
+              meal={selectedMealForCheckout}
+              onClose={() => setSelectedMealForCheckout(null)}
+            />
           </div>
         </div>
       )}
