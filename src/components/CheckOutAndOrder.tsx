@@ -19,7 +19,8 @@ type CheckOutAndOrderProps = {
 
 const CheckOutAndOrder = ({ meal, onClose }: CheckOutAndOrderProps) => {
   const quantity = meal.quantity ?? 1
-  const totalPrice = meal.mealPrice * quantity
+  const totalPrice = Number(meal.mealPrice) * quantity
+  const amountInKobo = Math.round(totalPrice * 100)
   const [email, setEmail] = useState("")
   const [paymentState, setPaymentState] = useState<"checkout" | "success" | "failed">("checkout")
 
@@ -43,12 +44,16 @@ const CheckOutAndOrder = ({ meal, onClose }: CheckOutAndOrderProps) => {
       payment.newTransaction({
         key: TEST_API_KEY,
         email,
-        amount: Math.round(totalPrice * 100),
+        amount: amountInKobo,
         currency: "NGN",
-        ref: paymentReference,
+        reference: paymentReference,
         label: meal.mealName,
         onSuccess: () => {
           setPaymentState("success")
+        },
+        onError: (error: { message: string }) => {
+          console.error("Paystack transaction error:", error.message)
+          setPaymentState("failed")
         },
         onCancel: () => {
           setPaymentState("failed")
@@ -85,11 +90,11 @@ const CheckOutAndOrder = ({ meal, onClose }: CheckOutAndOrderProps) => {
       <div className="rounded-lg bg-cream p-3">
         <p className="font-primary text-xl text-charcoal">{meal.mealName}</p>
         <p className="font-secondary text-sm text-charcoal/70">Quantity: {quantity}</p>
-        <p className="mt-2 font-semibold text-charcoal">{formatCurrency(totalPrice)}</p>
+        <p className="mt-2 font-semibold text-charcoal">{formatCurrency(amountInKobo)}</p>
       </div>
 
       <div className="rounded-lg border border-charcoal bg-black/10 p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">Paystack test</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">test payment</p>
         <div className="mt-3 space-y-3">
           <div>
             <label className="block text-xs uppercase tracking-wide text-charcoal/60">Email</label>
