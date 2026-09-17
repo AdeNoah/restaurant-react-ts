@@ -10,6 +10,10 @@ type BookingMeal = MealData & {
   quantity?: number
 }
 
+type PaidMeal = BookingMeal & {
+  paymentReference: string
+}
+
 // getting the booking from local storage 
 const getStoredBookingMeals = (): BookingMeal[] => {
   try {
@@ -21,9 +25,20 @@ const getStoredBookingMeals = (): BookingMeal[] => {
   }
 }
 
+const getStoredPaidMeals = (): PaidMeal[] => {
+  try {
+    const storedMeals = JSON.parse(localStorage.getItem("paidMeals") ?? "[]")
+    return Array.isArray(storedMeals) ? storedMeals : []
+  } catch (error) {
+    console.error("Unable to fetch paid meals:", error)
+    return []
+  }
+}
+
 // the bookings component that fetches and displays meals added to bookings from localStorage
 const Bookings = () => {
   const [bookingMeals, setBookingMeals] = useState<BookingMeal[]>([])
+  const [paidMeals, setPaidMeals] = useState<PaidMeal[]>(getStoredPaidMeals)
   const [selectedMealForCheckout, setSelectedMealForCheckout] = useState<BookingMeal | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -68,9 +83,30 @@ const Bookings = () => {
     updateBookingMeals(updatedMeals)
   }
 
-  // hook to render the 
+  // logic to handle removing  paid meals from local storage and state
+
+  const handleRemovePaidMeal = (paymentReference: string) => {
+    const updatedPaidMeals = paidMeals.filter((meal) => meal.paymentReference !== paymentReference)
+    setPaidMeals(updatedPaidMeals)
+    localStorage.setItem("paidMeals", JSON.stringify(updatedPaidMeals))
+  }
+
+  const handlePaymentSuccess = (meal: BookingMeal, paymentReference: string) => {
+    const paidMeal: PaidMeal = { ...meal, paymentReference }
+    const updatedPaidMeals = [
+      ...paidMeals.filter((paidMeal) => paidMeal.paymentReference !== paymentReference),
+      paidMeal,
+    ]
+
+    localStorage.setItem("paidMeals", JSON.stringify(updatedPaidMeals))
+    setPaidMeals(updatedPaidMeals)
+    updateBookingMeals(bookingMeals.filter((bookingMeal) => bookingMeal.mealId !== meal.mealId))
+  }
+
+  // hook to render the booked meals and paid meals
   useEffect(() => {
     setBookingMeals(getStoredBookingMeals())
+    setPaidMeals(getStoredPaidMeals())
     setLoading(false)
   }, [])
 
@@ -83,7 +119,7 @@ const Bookings = () => {
         <p className="font-secondary text-lg text-charcoal">Add meals to see them in your bookings</p>
       )}
 
-{/* render the meal  fetched from local storage and the display */}
+{/* render the booked meal fetched from local storage and the display */}
       {!loading && bookingMeals.length > 0 && (
         <div>
           <h1 className="mb-6 font-primary text-3xl text-charcoal">Your Bookings</h1>
@@ -146,6 +182,42 @@ const Bookings = () => {
           </div>
         </div>
       )}
+      {/* conditional rendering for the paid meals */}
+
+      {!loading && paidMeals.length > 0 && (
+        <div className="mt-10">
+          <h2 className="mb-6 font-primary text-3xl text-charcoal">Paid Meals</h2>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {paidMeals.map((meal) => {
+              const quantity = meal.quantity ?? 1
+              const totalPrice = meal.mealPrice * quantity
+
+              return (
+                <article key={meal.paymentReference} className="overflow-hidden rounded-md bg-cream shadow">
+                  <img src={meal.mealImage} alt={meal.mealName} className="h-40 w-full object-cover" />
+                  <div className="p-3">
+                    <h3 className="font-primary font-semibold">{meal.mealName}</h3>
+                    <p>{formatCurrency(totalPrice)}</p>
+                    <p className="mt-1 font-secondary text-sm text-charcoal/70">Quantity: {quantity}</p>
+                    <p className="mt-2 font-secondary text-sm font-semibold text-green-700">Paid</p>
+                    <p className="mt-1 break-all font-secondary text-xs text-charcoal/70">
+                      Reference: {meal.paymentReference}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePaidMeal(meal.paymentReference)}
+                      className="mt-3 w-full rounded-md border border-terracotta bg-transparent px-3 py-2 font-secondary text-sm font-semibold text-terracotta transition hover:bg-terracotta hover:text-cream"
+                      aria-label={`Remove ${meal.mealName} from paid meals`}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* condition check if the checkout button is clickec or if the payment overlay is closed */}
       {selectedMealForCheckout && (
@@ -160,6 +232,9 @@ const Bookings = () => {
             <CheckOutAndOrder
               meal={selectedMealForCheckout}
               onClose={() => setSelectedMealForCheckout(null)}
+              onPaymentSuccess={(paymentReference) => {
+                handlePaymentSuccess(selectedMealForCheckout, paymentReference)
+              }}
             />
           </div>
         </div>

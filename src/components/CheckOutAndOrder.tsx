@@ -15,9 +15,10 @@ type BookingMeal = MealData & {
 type CheckOutAndOrderProps = {
   meal: BookingMeal
   onClose: () => void
+  onPaymentSuccess: (paymentReference: string) => void
 }
 
-const CheckOutAndOrder = ({ meal, onClose }: CheckOutAndOrderProps) => {
+const CheckOutAndOrder = ({ meal, onClose, onPaymentSuccess }: CheckOutAndOrderProps) => {
   const quantity = meal.quantity ?? 1
   const totalPrice = Number(meal.mealPrice) * quantity
   const amountInKobo = Math.round(totalPrice * 100)
@@ -49,6 +50,7 @@ const CheckOutAndOrder = ({ meal, onClose }: CheckOutAndOrderProps) => {
         reference: paymentReference,
         label: meal.mealName,
         onSuccess: () => {
+          onPaymentSuccess(paymentReference)
           setPaymentState("success")
         },
         onError: (error: { message: string }) => {
@@ -90,7 +92,7 @@ const CheckOutAndOrder = ({ meal, onClose }: CheckOutAndOrderProps) => {
       <div className="rounded-lg bg-cream p-3">
         <p className="font-primary text-xl text-charcoal">{meal.mealName}</p>
         <p className="font-secondary text-sm text-charcoal/70">Quantity: {quantity}</p>
-        <p className="mt-2 font-semibold text-charcoal">{formatCurrency(amountInKobo)}</p>
+        <p className="mt-2 font-semibold text-charcoal">{formatCurrency(totalPrice)}</p>
       </div>
 
       <div className="rounded-lg border border-charcoal bg-black/10 p-4">
